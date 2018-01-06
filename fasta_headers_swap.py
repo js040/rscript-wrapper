@@ -30,12 +30,16 @@ except Exception:
 
 ##function containing wrapper for R script 
 def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafile,outputdir,filenameprefix,pathtoscripts):
-    if not os.path.exists("output-directory"):
-        os.makedirs("output-directory")
+    if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
     logfile = open(str(filenameprefix)+"_program.log", 'w') #open log file, which logs all stdout
     logfile.write("***Start fasta_headers_swap***\n") 
     fastaheaderstime = time.time() 
-    command=str(pathtoscripts)+'/libs/fasta_headers_swap.r '+str(shortnamefasta)+' '+str(keeptaxonomylookup)+' '+str(newlongnamefastafile) #define command
+    checkcwd=str(os.getcwd())
+    if str(outputdir) is not str(checkcwd):
+        command=str(pathtoscripts)+'/libs/fasta_headers_swap.r '+str(outputdir)+"/"+str(shortnamefasta)+' '+str(outputdir)+"/"+str(keeptaxonomylookup)+' '+str(outputdir)+"/"+str(newlongnamefastafile) #define command
+    else:
+        command=str(pathtoscripts)+'/libs/fasta_headers_swap.r '+str(shortnamefasta)+' '+str(keeptaxonomylookup)+' '+str(newlongnamefastafile) #define command
     print("Full command: \n\n    "+str(command)+"\n")
     process=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) #run command, and catch stdout and sterr
     for line in process.stdout: #log all stout while running software

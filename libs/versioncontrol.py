@@ -20,7 +20,7 @@ proc=subprocess.Popen(['Rscript --version &> /dev/stdout | sed \'s/^.*version //
 rscript_version_found=proc.stdout.read()[0:-1]
 rscript_version_found=rscript_version_found.decode("utf-8")
 
-fastaheadersswap_version='1.0'
+fastaheadersswap_version='1.0.1'
 
 
 
