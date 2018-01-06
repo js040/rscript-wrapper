@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 __author__ = "Sean P. Jungbluth" and "Robert M. Bowers"
-__copyright__ = "Copyright 2017"
+__copyright__ = "Copyright 2018"
 __license__ = "GPL 3.0"
 __maintainer__ = "Sean P. Jungbluth"
 __email__ = "jungbluth.sean@gmail.com"
 
 
 #import os, sys, argparse, shutil, subprocess, time
-import os, argparse
+import os, sys, argparse, time
 from argparse import RawTextHelpFormatter
 from os.path import join
 from libs.logger import Logger
@@ -26,15 +26,15 @@ except Exception:
 
 
 
-def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafile):
+def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafile,outputdir,filenameprefix):
     if not os.path.exists("output-directory"):
         os.makedirs("output-directory")
     logfile = open(str(filenameprefix)+"_program.log", 'w')
     logfile.write("***Start fasta_headers_swap***\n")
     fastaheaderstime = time.time()
-         command='fasta_headers_swap.r --shortnamefasta'+str(shortnamefasta)+' --keeptaxonomylookup '+str(keeptaxonomylookup)+' --newlongnamefastafile '+str(newlongnamefastafile)
+    command='fasta_headers_swap.r --shortnamefasta'+str(shortnamefasta)+' --keeptaxonomylookup '+str(keeptaxonomylookup)+' --newlongnamefastafile '+str(newlongnamefastafile)
     print("Full command: \n\n    "+str(command)+"\n")
-    process=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process=subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in process.stdout:
         sys.stdout.write(str(line))
         logfile.write(str(line)[2:-3])
@@ -45,7 +45,7 @@ def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafil
     out, err = process.communicate()
     if process.returncode != 0: sys.exit("*Error running fasta_headers_swap*")
     else:
-    logfile.close()
+        logfile.close()
 #    for f in os.listdir(workingdirectory):
 #        if "MaxBin2" in f:
 #            shutil.move(f, os.path.join(str(workingdirectory)+"/bin-output_MaxBin2"))
@@ -54,35 +54,30 @@ def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafil
   
 if __name__ == '__main__':
     print("""
-Wrapper for rscript fasta_headers_swap
+Wrapper for fasta_headers_swap.r version %s
 """ % (fastaheadersswap_version))
-    parser = argparse.ArgumentParser(prog='fasta_headers_swap',usage='%(prog)s.py --shortnamefasta [shortnamefasta] --keeptaxonomylookup [keeptaxonomylookup] --newlongnamefastafile [newlongnamefastafile] --outputdir [outputdir] --version', description="""
+    parser = argparse.ArgumentParser(prog='fasta_headers_swap',usage='%(prog)s.py --shortnamefasta [shortnamefasta] --keeptaxonomylookup [keeptaxonomylookup] --newlongnamefastafile [newlongnamefastafile] --outputdir [outputdir] --filenameprefix [filenameprefix] --version', description="""
     description of program"""
     ,formatter_class=RawTextHelpFormatter)
     pathtoimag='~/bin/iMAG/'
     parser.add_argument("--shortnamefasta", dest="shortnamefasta", help="""Description of shortnamefasta""")
     parser.add_argument("--keeptaxonomylookup", dest="keeptaxonomylookup", default='y', help="""Description of keeptaxonomylookup""") #took a guess here that this is a y/n parameter
     parser.add_argument("--newlongnamefastafile", dest="newlongnamefastafile", default="imag-profiler-output", help="""Description of newlongnamefastafile""")
-    parser.add_argument("--outputdir", dest="outputdir", default="os.getcwd()", help="""Indicate output directory (default: current working directory""")
+    parser.add_argument("--outputdir", dest="outputdir", default=os.getcwd(), help="""Indicate output directory (default: current working directory)""")
+    parser.add_argument("--filenameprefix", dest="filenameprefix", default="fasta-rename_", help="""Indicate output directory (default: current working directory""")
     parser.add_argument('--version', action='version', version='%(prog)s v1.0')
     args = parser.parse_args()
     if len(sys.argv) is None:
         parser.print_help()
-    elif len(sys.argv) is < 3:
+    elif len(sys.argv) < 3:
         print('Need more arguements')
         parser.print_help()
-   else:
+    else:
         starttime = time.time()
         workingdirectory=os.getcwd()
         if not os.path.exists(args.outputdir):
             os.makedirs(args.outputdir)
-        elif outputdir is os.getcwd():
-            pass
-        else:
-            print('Error: output directory "'+args.outputdir+'" already exists, select a different output directory!\n')
-            print('Exiting...\n')
-            sys.exit()
-        sys.stdout = Logger(os.path.join(str(workingdirectory)+"/"+args.outputdir+"/"))
+        sys.stdout = Logger(os.path.join(args.outputdir+"/"))
         print('''
 ***************************************************************************
 *                        fasta_header_swap start                          *
@@ -109,7 +104,7 @@ Wrapper for rscript fasta_headers_swap
 
 
 
-        run_fasta_headers_swap(args.shortnamefasta,args.keeptaxonomylookup,args.newlongnamefastafile):
+        run_fasta_headers_swap(args.shortnamefasta,args.keeptaxonomylookup,args.newlongnamefastafile,args.outputdir,args.filenameprefix)
 
 
         print('''

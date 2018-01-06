@@ -1,8 +1,12 @@
-# swap fasta headers using two col dataframe 
-
 #!/usr/bin/env Rscript
 
+#__author__ = "Robert M. Bowers"
+#__copyright__ = "Copyright 2018"
+#__license__ = "GPL 3.0"
+
 #changed shebang line to look for default Rscript loaded into environment
+
+# swap fasta headers using two col dataframe 
 
 
 # this line is needed to run Rscript from command line
