@@ -15,7 +15,6 @@ from libs.logger import Logger
 
 from libs.versioncontrol import *
 
-
 try:
     if sys.version_info.major != 3:
         sys.stderr.write('\nError: python version 3 is required - you have python version %d.\n\n' % sys.version_info.major)
@@ -32,7 +31,7 @@ def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafil
     logfile = open(str(filenameprefix)+"_program.log", 'w')
     logfile.write("***Start fasta_headers_swap***\n")
     fastaheaderstime = time.time()
-    command=str(pathtoscripts)+'/fasta_headers_swap.r '+str(shortnamefasta)+' '+str(keeptaxonomylookup)+' '+str(newlongnamefastafile)
+    command=str(pathtoscripts)+'/libs/fasta_headers_swap.r '+str(shortnamefasta)+' '+str(keeptaxonomylookup)+' '+str(newlongnamefastafile)
     print("Full command: \n\n    "+str(command)+"\n")
     process=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in process.stdout:
