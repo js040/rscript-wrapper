@@ -26,15 +26,15 @@ except Exception:
 
 
 
-def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafile,outputdir,filenameprefix):
+def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafile,outputdir,filenameprefix,pathtoscripts):
     if not os.path.exists("output-directory"):
         os.makedirs("output-directory")
     logfile = open(str(filenameprefix)+"_program.log", 'w')
     logfile.write("***Start fasta_headers_swap***\n")
     fastaheaderstime = time.time()
-    command='fasta_headers_swap.r --shortnamefasta'+str(shortnamefasta)+' --keeptaxonomylookup '+str(keeptaxonomylookup)+' --newlongnamefastafile '+str(newlongnamefastafile)
+    command=str(pathtoscripts)+'/fasta_headers_swap.r '+str(shortnamefasta)+' '+str(keeptaxonomylookup)+' '+str(newlongnamefastafile)
     print("Full command: \n\n    "+str(command)+"\n")
-    process=subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in process.stdout:
         sys.stdout.write(str(line))
         logfile.write(str(line)[2:-3])
@@ -56,15 +56,16 @@ if __name__ == '__main__':
     print("""
 Wrapper for fasta_headers_swap.r version %s
 """ % (fastaheadersswap_version))
-    parser = argparse.ArgumentParser(prog='fasta_headers_swap',usage='%(prog)s.py --shortnamefasta [shortnamefasta] --keeptaxonomylookup [keeptaxonomylookup] --newlongnamefastafile [newlongnamefastafile] --outputdir [outputdir] --filenameprefix [filenameprefix] --version', description="""
+    parser = argparse.ArgumentParser(prog='fasta_headers_swap',usage='%(prog)s.py --shortnamefasta [shortnamefasta] --keeptaxonomylookup [keeptaxonomylookup] --newlongnamefastafile [newlongnamefastafile] --outputdir [outputdir] --filenameprefix [filenameprefix] --pathtoscripts [pathtoscripts] --version', description="""
     description of program"""
     ,formatter_class=RawTextHelpFormatter)
     pathtoimag='~/bin/iMAG/'
-    parser.add_argument("--shortnamefasta", dest="shortnamefasta", help="""Description of shortnamefasta""")
-    parser.add_argument("--keeptaxonomylookup", dest="keeptaxonomylookup", default='y', help="""Description of keeptaxonomylookup""") #took a guess here that this is a y/n parameter
-    parser.add_argument("--newlongnamefastafile", dest="newlongnamefastafile", default="imag-profiler-output", help="""Description of newlongnamefastafile""")
+    parser.add_argument("--shortnamefasta", dest="shortnamefasta", default='', help="""Description of shortnamefasta""")
+    parser.add_argument("--keeptaxonomylookup", dest="keeptaxonomylookup", default='', help="""Description of keeptaxonomylookup""") #took a guess here that this is a y/n parameter
+    parser.add_argument("--newlongnamefastafile", dest="newlongnamefastafile", default='', help="""Description of newlongnamefastafile""")
     parser.add_argument("--outputdir", dest="outputdir", default=os.getcwd(), help="""Indicate output directory (default: current working directory)""")
     parser.add_argument("--filenameprefix", dest="filenameprefix", default="fasta-rename_", help="""Indicate output directory (default: current working directory""")
+    parser.add_argument("--pathtoscripts", dest="pathtoscripts", default='/Applications/ResearchSoftware/rscript-wrapper', help="""Indicate path to scripts (default: /Applications/ResearchSoftware/rscript-wrapper""")
     parser.add_argument('--version', action='version', version='%(prog)s v1.0')
     args = parser.parse_args()
     if len(sys.argv) is None:
@@ -88,7 +89,10 @@ Wrapper for fasta_headers_swap.r version %s
         print("    shortnamefasta: " + str(args.shortnamefasta))
         print("    keeptaxonomylookup: " + str(args.keeptaxonomylookup))
         print("    newlongnamefastafile: " + str(args.newlongnamefastafile))
-        print("    Output directory: " + str(args.outputdir))
+        print("    output directory: " + str(args.outputdir))
+        print("    filename prefix: " + str(args.filenameprefix))
+        print("    path to scripts: " + str(args.pathtoscripts))
+
         print("Software and versions detected by iMAG-profiler:")
         print("")
         print("    %s" % (python_version_found))
@@ -104,7 +108,7 @@ Wrapper for fasta_headers_swap.r version %s
 
 
 
-        run_fasta_headers_swap(args.shortnamefasta,args.keeptaxonomylookup,args.newlongnamefastafile,args.outputdir,args.filenameprefix)
+        run_fasta_headers_swap(args.shortnamefasta,args.keeptaxonomylookup,args.newlongnamefastafile,args.outputdir,args.filenameprefix,args.pathtoscripts)
 
 
         print('''
