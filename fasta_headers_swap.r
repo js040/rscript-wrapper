@@ -1,6 +1,9 @@
 # swap fasta headers using two col dataframe 
 
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
+
+#changed shebang line to look for default Rscript loaded into environment
+
 
 # this line is needed to run Rscript from command line
 args <- commandArgs(trailingOnly = TRUE)
