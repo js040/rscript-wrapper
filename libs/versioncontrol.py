@@ -10,7 +10,6 @@ __email__ = "jungbluth.sean@gmail.com"
 import subprocess
 
 
-
 ##lookup python version
 proc=subprocess.Popen(['python3 --version &> /dev/stdout'], stdout=subprocess.PIPE, shell=True)
 python_version_found=proc.stdout.read()[0:-1]
@@ -21,7 +20,7 @@ proc=subprocess.Popen(['Rscript --version &> /dev/stdout | sed \'s/^.*version //
 rscript_version_found=proc.stdout.read()[0:-1]
 rscript_version_found=rscript_version_found.decode("utf-8")
 
-
+fastaheadersswap_version='1.0'
 
 
 

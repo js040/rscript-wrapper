@@ -51,13 +51,11 @@ def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafil
 #            shutil.move(f, os.path.join(str(workingdirectory)+"/bin-output_MaxBin2"))
 
 
-
-
   
 if __name__ == '__main__':
     print("""
 Wrapper for rscript fasta_headers_swap
-""" % (imag_version))
+""" % (fastaheadersswap_version))
     parser = argparse.ArgumentParser(prog='fasta_headers_swap',usage='%(prog)s.py --shortnamefasta [shortnamefasta] --keeptaxonomylookup [keeptaxonomylookup] --newlongnamefastafile [newlongnamefastafile] --outputdir [outputdir] --version', description="""
     description of program"""
     ,formatter_class=RawTextHelpFormatter)
@@ -65,7 +63,7 @@ Wrapper for rscript fasta_headers_swap
     parser.add_argument("--shortnamefasta", dest="shortnamefasta", help="""Description of shortnamefasta""")
     parser.add_argument("--keeptaxonomylookup", dest="keeptaxonomylookup", default='y', help="""Description of keeptaxonomylookup""") #took a guess here that this is a y/n parameter
     parser.add_argument("--newlongnamefastafile", dest="newlongnamefastafile", default="imag-profiler-output", help="""Description of newlongnamefastafile""")
-    parser.add_argument("--outputdir", dest="outputdir", default="output-directory", help="""Indicate output directory""")
+    parser.add_argument("--outputdir", dest="outputdir", default="os.getcwd()", help="""Indicate output directory (default: current working directory""")
     parser.add_argument('--version', action='version', version='%(prog)s v1.0')
     args = parser.parse_args()
     if len(sys.argv) is None:
@@ -78,11 +76,13 @@ Wrapper for rscript fasta_headers_swap
         workingdirectory=os.getcwd()
         if not os.path.exists(args.outputdir):
             os.makedirs(args.outputdir)
+        elif outputdir is os.getcwd():
+            pass
         else:
             print('Error: output directory "'+args.outputdir+'" already exists, select a different output directory!\n')
             print('Exiting...\n')
             sys.exit()
-        sys.stdout = Logger(os.path.join(str(workingdirectory)+"/"+args.outputdir+"/"+args.filenameprefix))
+        sys.stdout = Logger(os.path.join(str(workingdirectory)+"/"+args.outputdir+"/"))
         print('''
 ***************************************************************************
 *                        fasta_header_swap start                          *
