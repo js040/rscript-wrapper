@@ -58,7 +58,6 @@ Wrapper for fasta_headers_swap.r version %s
     parser = argparse.ArgumentParser(prog='fasta_headers_swap',usage='%(prog)s.py --shortnamefasta [shortnamefasta] --keeptaxonomylookup [keeptaxonomylookup] --newlongnamefastafile [newlongnamefastafile] --outputdir [outputdir] --filenameprefix [filenameprefix] --pathtoscripts [pathtoscripts] --version', description="""
     description of program"""
     ,formatter_class=RawTextHelpFormatter)
-    pathtoimag='~/bin/iMAG/'
     parser.add_argument("--shortnamefasta", dest="shortnamefasta", default='', help="""Description of shortnamefasta""")
     parser.add_argument("--keeptaxonomylookup", dest="keeptaxonomylookup", default='', help="""Description of keeptaxonomylookup""") #took a guess here that this is a y/n parameter
     parser.add_argument("--newlongnamefastafile", dest="newlongnamefastafile", default='', help="""Description of newlongnamefastafile""")
@@ -91,11 +90,11 @@ Wrapper for fasta_headers_swap.r version %s
         print("    output directory: " + str(args.outputdir))
         print("    filename prefix: " + str(args.filenameprefix))
         print("    path to scripts: " + str(args.pathtoscripts))
-
-        print("Software and versions detected by iMAG-profiler:")
+        print("")
+        print("Software and versions detected:")
         print("")
         print("    %s" % (python_version_found))
-        print("    Rscript: v%s" % (rscript_version_found))  ##########
+        print("    Rscript: v%s" % (rscript_version_found))  
         print("")
 #        my_file=Path(workingdirectory+'/'+args.filenameprefix+'_bioelement-table.txt')
 #        if my_file.exists():
