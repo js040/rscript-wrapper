@@ -6,12 +6,14 @@ __license__ = "GPL 3.0"
 __maintainer__ = "Sean P. Jungbluth"
 __email__ = "jungbluth.sean@gmail.com"
 
-#import os, sys, argparse, shutil, subprocess, shlex, time, re, glob
+
+#import os, sys, argparse, shutil, subprocess, time
 import os, argparse
 from argparse import RawTextHelpFormatter
 from os.path import join
+from libs.logger import Logger
 
-from imag.versioncontrol import *
+from libs.versioncontrol import *
 
 
 try:
@@ -21,20 +23,49 @@ try:
 except Exception:
     sys.stderr.write("Unable to detect python version - assuming python 3 installed.\n\n")
     
+
+
+
+def run_fasta_headers_swap(shortnamefasta,keeptaxonomylookup,newlongnamefastafile):
+    if not os.path.exists("output-directory"):
+        os.makedirs("output-directory")
+    logfile = open(str(filenameprefix)+"_program.log", 'w')
+    logfile.write("***Start fasta_headers_swap***\n")
+    fastaheaderstime = time.time()
+         command='fasta_headers_swap.r --shortnamefasta'+str(shortnamefasta)+' --keeptaxonomylookup '+str(keeptaxonomylookup)+' --newlongnamefastafile '+str(newlongnamefastafile)
+    print("Full command: \n\n    "+str(command)+"\n")
+    process=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    for line in process.stdout:
+        sys.stdout.write(str(line))
+        logfile.write(str(line)[2:-3])
+        logfile.write('\n')
+    process.wait()
+    print("\n\nfasta_headers_swap ran in %s seconds" % round((time.time() - fastaheaderstime),2))
+    logfile.write("***End fasta_headers_swap***\n")
+    out, err = process.communicate()
+    if process.returncode != 0: sys.exit("*Error running fasta_headers_swap*")
+    else:
+    logfile.close()
+#    for f in os.listdir(workingdirectory):
+#        if "MaxBin2" in f:
+#            shutil.move(f, os.path.join(str(workingdirectory)+"/bin-output_MaxBin2"))
+
+
+
+
   
 if __name__ == '__main__':
     print("""
 Wrapper for rscript fasta_headers_swap
 """ % (imag_version))
-    parser = argparse.ArgumentParser(prog='fasta_headers_swap',usage='%(prog)s.py -l [pathtolookuptable] -e [bioelement] -b [pathtobins] --version', description="""
+    parser = argparse.ArgumentParser(prog='fasta_headers_swap',usage='%(prog)s.py --shortnamefasta [shortnamefasta] --keeptaxonomylookup [keeptaxonomylookup] --newlongnamefastafile [newlongnamefastafile] --outputdir [outputdir] --version', description="""
     description of program"""
     ,formatter_class=RawTextHelpFormatter)
     pathtoimag='~/bin/iMAG/'
-    requiredNamed = parser.add_argument_group('required arguments')
-    requiredNamed.add_argument("-l", dest="lookuptable", help="""Indicate path to the bioelement/hmm lookup table. (default: /path/to/iMAG/../doc/bioelement-process-gene-function-lookup-table.txt)""", default=pathtoimag+'doc/bioelement-process-gene-function-lookup-table.txt', required=False)
-    parser.add_argument("-e", dest="bioelement", default='All', help="""Indicate the bioelement/biocompounds to be profile. (options: All, Arsenic, C1-compounds, Carbon-fixation, Carbon-monoxide, Halogenated-compounds, Hydrogen, Metals, Methane, Nitriles, Nitrogen, Oxygen, Selenium, Sulfur, Urea) (default: All)""")
-    parser.add_argument("-b", dest="pathtobins", default=str(os.getcwd()), help="""Indicate the full path to the bins to be inspected. (default: cwd)""")
-    parser.add_argument("-o", dest="outputdir", default="imag-profiler-output", help="""Indicate output directory to be used. (default: imag-profiler-output)""")
+    parser.add_argument("--shortnamefasta", dest="shortnamefasta", help="""Description of shortnamefasta""")
+    parser.add_argument("--keeptaxonomylookup", dest="keeptaxonomylookup", default='y', help="""Description of keeptaxonomylookup""") #took a guess here that this is a y/n parameter
+    parser.add_argument("--newlongnamefastafile", dest="newlongnamefastafile", default="imag-profiler-output", help="""Description of newlongnamefastafile""")
+    parser.add_argument("--outputdir", dest="outputdir", default="output-directory", help="""Indicate output directory""")
     parser.add_argument('--version', action='version', version='%(prog)s v1.0')
     args = parser.parse_args()
     if len(sys.argv) is None:
@@ -59,9 +90,9 @@ Wrapper for rscript fasta_headers_swap
         ''')
         print("Parameters used to run fasta_headers_swap:")
         print("")
-        print("    Bioelement(s)/biocompound(s) to profile: " + str(args.bioelement))
-        print("    Path to bins: " + str(args.pathtobins))
-        print("    Path to bioelement/hmm lookup take: " + str(args.lookuptable))
+        print("    shortnamefasta: " + str(args.shortnamefasta))
+        print("    keeptaxonomylookup: " + str(args.keeptaxonomylookup))
+        print("    newlongnamefastafile: " + str(args.newlongnamefastafile))
         print("    Output directory: " + str(args.outputdir))
         print("Software and versions detected by iMAG-profiler:")
         print("")
@@ -76,6 +107,9 @@ Wrapper for rscript fasta_headers_swap
 #        else:
 #            generate_querytable(args.bioelement,args.filenameprefix,workingdirectory,args.lookuptable)
 
+
+
+        run_fasta_headers_swap(args.shortnamefasta,args.keeptaxonomylookup,args.newlongnamefastafile):
 
 
         print('''
