@@ -71,7 +71,7 @@ Wrapper for fasta_headers_swap.r version %s
     parser.add_argument("--newlongnamefastafile", dest="newlongnamefastafile", default='', help="""Description of newlongnamefastafile""")
     parser.add_argument("--outputdir", dest="outputdir", default=os.getcwd(), help="""Indicate output directory (default: current working directory)""")
     parser.add_argument("--filenameprefix", dest="filenameprefix", default="fasta-rename", help="""Indicate filename prefix (default: current working directory""")
-    parser.add_argument("--pathtoscripts", dest="pathtoscripts", default='/Applications/ResearchSoftware/rscript-wrapper', help="""Indicate path to scripts (default: /Applications/ResearchSoftware/rscript-wrapper""")
+    parser.add_argument("--pathtoscripts", dest="pathtoscripts", default='/Applications/ResearchSoftware/rscript-wrapper', help="""Indicate the full path to scripts (e.g., /Applications/ResearchSoftware/rscript-wrapper""")
     parser.add_argument('--version', action='version', version='%(prog)s v1.0')
     args = parser.parse_args()
     if len(sys.argv) is None: #print help if no flags declared
